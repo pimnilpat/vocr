@@ -21,7 +21,7 @@ def get_db():
     return g.db
 
 
-def close_db():
+def close_db(error):
     db = g.pop("db", None)   #return None if db isn't in g 
 
     if db is not None:
@@ -43,4 +43,8 @@ defines a command line called 'init-db' that calls the init_db function
 def init_db_command():
     '""Clear the existing data and create new  tables.""'
     init_db()
-    click.echo()
+    click.echo("initialized the database.")
+
+def init_app(app):
+    app.teardown_appcontext(close_db) #tells Flask to call that function when cleaning up after returning the response
+    app.cli.add_command(init_db_command)  #adds a new command that can be called with the flask command

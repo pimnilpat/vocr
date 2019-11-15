@@ -1,7 +1,8 @@
 import os
 from flask import Flask
+from . import db
+from .main_api import main_api
 from datetime import datetime, timedelta
-from flask import Request, Response, url_for, json, request
 
 
 def create_api(config=None):
@@ -24,6 +25,7 @@ def create_api(config=None):
     '''sets some default configuration that the app will use:'''
     app.config.from_mapping(
         ENV = "dev",
+        PERMANENT_SESSION_LIFETIME = timedelta(minutes=15),
         SECRET_KEY = "dev",  #SECRET_KEY is used by Flask and extensions to keep data safe
         DATABASE = os.path.join(app.instance_path, "api.sqlite")   #DATABASE is the path where the SQLite database file will be saved       
     )
@@ -48,39 +50,17 @@ def create_api(config=None):
     except OSError:
         pass
 
-    
-    #Define API Route
 
     '''
-    Error handler methed
-    404 , not found
+    Import and call db function from the factory
     '''
-    @app.errorhandler(404)
-    def not_found(error=None):
-        message = {
-            "message" : "Not found : " + request.url
-        }
-
-        resp = Response(json.dumps(message, default=str))
-        resp.mimetype = "application/json"
-        resp.default_status = 404
-
-        return resp
+    db.init_app(app)
 
 
-    @app.route('/api')
-    def index():  
-    
-        res_message = """Welcome to VOCR API \nYou are running on {0} \nSession time is {1}"""
-
-        res_message = res_message.format(app.config["ENV"], app.config["PERMANENT_SESSION_LIFETIME"])
-            
-
-        resp = Response(res_message)
-        resp.mimetype = "text/plain"
-        resp.status_code = 200
-
-        return resp
+    '''
+    Call API
+    '''
+    main_api(app)
    
     
 
