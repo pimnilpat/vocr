@@ -1,8 +1,9 @@
 import os
 from flask import Flask
-from . import db
 from .main_api import main_api
 from datetime import datetime, timedelta
+from . import auth
+from . import db
 
 
 def create_api(config=None):
@@ -21,9 +22,14 @@ def create_api(config=None):
     '''
 
     app = Flask(__name__, instance_relative_config=True)
+
+    UPLOAD_FOLDER = "/path/to/the/uploads"
+    ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
     
     '''sets some default configuration that the app will use:'''
     app.config.from_mapping(
+        
+        UPLOAD_FOLDER = UPLOAD_FOLDER 
         ENV = "dev",
         PERMANENT_SESSION_LIFETIME = timedelta(minutes=15),
         SECRET_KEY = "dev",  #SECRET_KEY is used by Flask and extensions to keep data safe
@@ -56,6 +62,10 @@ def create_api(config=None):
     '''
     db.init_app(app)
 
+    '''
+    Register blueprint in factory function
+    '''
+    app.register_blueprint(auth.bp)
 
     '''
     Call API
@@ -66,5 +76,6 @@ def create_api(config=None):
 
     return app
 
-
-    
+create_api()
+PROJECT_HOME = os.path
+xx = "sdf"
