@@ -16,3 +16,16 @@ Remember, you should still be in the top-level vocr directory, not the api packa
 
 Visit http://127.0.0.1:4000/api in a browser and you should see the api information message. 
 Congratulations, you’re now running your VOCR API application!
+
+
+DEBUG APPLICATION 
+
+Linux
+    export FLASK_APP="app.py"
+    export FLASK_DEBUG=1
+    python -m flask run --host=0.0.0.0
+
+Windows
+    set FLASK_APP="app.py"
+    set FLASK_DEBUG=1
+    python -m flask run --host=0.0.0.0 --port=5001

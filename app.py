@@ -4,7 +4,7 @@ from api import create_api
 
 app = create_api()
 
-print(app.config)
+#print(app.config)
 
-# if __name__ == "__main__":
-#     app.run(host="0.0.0.0", port=4000)
+if __name__ == "__main__":
+  app.run(host="0.0.0.0", port=4000)

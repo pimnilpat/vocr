@@ -22,18 +22,19 @@ def create_api(config=None):
     '''
 
     app = Flask(__name__, instance_relative_config=True)
-
-    UPLOAD_FOLDER = "/path/to/the/uploads"
-    ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+   
+    ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
     
     '''sets some default configuration that the app will use:'''
-    app.config.from_mapping(
-        
-        UPLOAD_FOLDER = UPLOAD_FOLDER 
-        ENV = "dev",
+    app.config.from_mapping(        
+        ENV = "development",
+        DEBUG = True,
         PERMANENT_SESSION_LIFETIME = timedelta(minutes=15),
-        SECRET_KEY = "dev",  #SECRET_KEY is used by Flask and extensions to keep data safe
-        DATABASE = os.path.join(app.instance_path, "api.sqlite")   #DATABASE is the path where the SQLite database file will be saved       
+        SECRET_KEY = "development",  #SECRET_KEY is used by Flask and extensions to keep data safe
+        DATABASE = os.path.join(app.instance_path, "api.sqlite"),   #DATABASE is the path where the SQLite database file will be saved
+        UPLOAD_FOLDER = os.path.join(app.instance_path, "uploads"), #Upload folder
+        MAX_CONTENT_LENGTH = 16 * 1024 * 1024,   #Define maximum file size upload   
+        ALLOWED_EXTENSIONS = ALLOWED_EXTENSIONS                          
     )
        
 
@@ -58,6 +59,15 @@ def create_api(config=None):
 
 
     '''
+    create upload directory inside instance path
+    '''
+    try:
+        os.makedirs(os.path.join(app.instance_path, "uploads"), exist_ok=True)
+    except OSError:
+        pass
+
+
+    '''
     Import and call db function from the factory
     '''
     db.init_app(app)
@@ -77,5 +87,4 @@ def create_api(config=None):
     return app
 
 create_api()
-PROJECT_HOME = os.path
-xx = "sdf"
+
