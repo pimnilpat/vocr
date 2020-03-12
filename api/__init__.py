@@ -21,7 +21,7 @@ def create_api(config=None):
     such as configuration secrets and the database file.
     '''
 
-    app = Flask(__name__, instance_relative_config=True)
+    app = Flask(__name__,instance_relative_config=True)
    
     ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
     
@@ -86,5 +86,5 @@ def create_api(config=None):
 
     return app
 
-create_api()
+
 

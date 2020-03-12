@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 from flask import Request, Response, url_for, json, request
 from werkzeug.utils import secure_filename
+import os
+from flask import render_template
 
 
 class main_api():
@@ -25,7 +27,7 @@ class main_api():
             return resp
 
 
-        @app.route("/api", methods=["GET"])
+        @app.route("/api/0.0.1", methods=["GET"])
         def index():  
         
             res_message = """Welcome to VOCR API \nYou are running on {0} \nSession time is {1} \nUpload folder is {2}"""
@@ -39,8 +41,12 @@ class main_api():
 
             return resp
 
-        
-        @app.route("/api/cheque/read", methods=["POST"])        
+        @app.route("/views/images", methods=["GET"])
+        def display_images():
+            lists = os.listdir(app.config["UPLOAD_FOLDER"])            
+            return render_template("display-image.html", url=lists)
+
+        @app.route("/api/0.0.1/bucard/read", methods=["POST"])        
         def extract_image():
             #check if request has the  file part
             if "file" not in request.files:
@@ -72,13 +78,14 @@ class main_api():
                 file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))  #save file
 
                 message = {
-                    "message": "File successfully uploaded"
+                    "message": "File successfully uploaded",
+                    "url": render_template("base.html")
                 }
 
                 resp = Response(json.dumps(message, default=str))
                 resp.mimetype = "application/json"
                 resp.status_code = 201
-                return resp
+                return resp               
 
             else: 
                 message = {
@@ -90,7 +97,8 @@ class main_api():
                 resp.status_code = 400
                 return resp
 
-
+        def allowed_file(filename):
+            return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
             
 
         
